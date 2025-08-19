@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoinDCX Trading Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #1C2951;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .logo {
+            width: 140px;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+            max-height: 50px;
+        }
+
+        .logo-fallback {
+            width: 140px;
+            height: 40px;
+            background: #FA4A29;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1C2951;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 20px auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(28, 41, 81, 0.1);
+            border: 1px solid rgba(28, 41, 81, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1C2951;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .form-group input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1C2951;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #FA4A29;
+            box-shadow: 0 0 0 3px rgba(250, 74, 41, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 280px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .btn-primary {
+            background: #FA4A29;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #e63e1f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 74, 41, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #1C2951;
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background: #162040;
+            transform: translateY(-2px);
+        }
+
+        .question-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #FA4A29;
+            font-weight: 600;
+        }
+
+        .question {
+            margin-bottom: 25px;
+        }
+
+        .question h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            color: #1C2951;
+        }
+
+        .question-image {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            border: 2px dashed #e0e0e0;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            color: #1C2951;
+        }
+
+        .option:hover {
+            border-color: #FA4A29;
+            background: rgba(250, 74, 41, 0.05);
+        }
+
+        .option.selected {
+            border-color: #FA4A29;
+            background: rgba(250, 74, 41, 0.1);
+            color: #FA4A29;
+            font-weight: 500;
+        }
+
+        .result-card {
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .result-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .win-icon {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .lose-icon {
+            background: linear-gradient(135deg, #FA4A29, #dc3545);
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1C2951;
+        }
+
+        .result-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .twitter { background: #1da1f2; }
+        .whatsapp { background: #25d366; }
+        .telegram { background: #0088cc; }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-section {
+            background: #1C2951;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .cta-section h4 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #FA4A29;
+            transition: width 0.5s ease;
+        }
+
+        .quiz-info {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #FA4A29;
+        }
+
+        .quiz-info strong {
+            color: #1C2951;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+
+            .share-buttons {
+                gap: 8px;
+            }
+
+            .share-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen">
+            <div class="header">
+                <img src="https://coindcx.s3.amazonaws.com/static/images/a5e25c09-f303-4596-98d9-d5f2d80d1f1c/Logo-1__1_.svg" 
+                     alt="CoinDCX Logo" 
+                     class="logo"
+                     onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+                <div id="logo-fallback" class="logo-fallback" style="display: none;">CoinDCX</div>
+                
+                <h1 class="title">Trading Quiz Challenge</h1>
+                <p class="subtitle">Test your trading knowledge and win Gautam Gambhir signed memorabilia!</p>
+            </div>
+            
+            <div class="card">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                </div>
+                
+                <button class="btn btn-primary" onclick="startQuiz()">Start Quiz Challenge</button>
+            </div>
+            
+            <div class="quiz-info">
+                <strong>Quiz Rules:</strong><br>
+                • 5 random questions • Score 3+ to win • One attempt only
+            </div>
+
+            <img src="https://coindcx.s3.amazonaws.com/static/images/00fd8e90-b34e-474a-8244-6fb161625a1f/CoinDCX_GautamGambhir_20oct24_20300__1___3_.png" 
+                 alt="Gautam Gambhir" 
+                 class="hero-image"
+                 onerror="this.style.display='none';">
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="header">
+                <img src="https://coindcx.s3.amazonaws.com/static/images/a5e25c09-f303-4596-98d9-d5f2d80d1f1c/Logo-1__1_.svg" 
+                     alt="CoinDCX Logo" 
+                     class="logo"
+                     onerror="this.style.display='none'; document.getElementById('logo-fallback-2').style.display='block';">
+                <div id="logo-fallback-2" class="logo-fallback" style="display: none;">CoinDCX</div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="question-counter" id="question-counter">Question 1 of 5</div>
+            </div>
+            
+            <div class="card">
+                <div class="question" id="question-container">
+                    <!-- Questions will be populated here -->
+                </div>
+                
+                <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden">
+            <div class="header">
+                <img src="https://coindcx.s3.amazonaws.com/static/images/a5e25c09-f303-4596-98d9-d5f2d80d1f1c/Logo-1__1_.svg" 
+                     alt="CoinDCX Logo" 
+                     class="logo"
+                     onerror="this.style.display='none'; document.getElementById('logo-fallback-3').style.display='block';">
+                <div id="logo-fallback-3" class="logo-fallback" style="display: none;">CoinDCX</div>
+            </div>
+            
+            <div class="card result-card" id="result-content">
+                <!-- Results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - Your actual Google Sheets setup
+        const CONFIG = {
+            QUESTIONS_SHEET_ID: '1Eblrd9fkzTlEDBnJ8Ju87oynIkZfzpGMH0z6C9PMhcM',
+            RESULTS_SHEET_ID: '1F1RwIx7m84FY6JMNwDlb5gTK65DLrkpGT33aI_9auwo',
+            API_KEY: 'AIzaSyAPdtL0HrgW3YTV9WawK0zre2qQM5WZTW8',
+            QUESTIONS_RANGE: 'Question Bank!A2:H',
+            RESULTS_RANGE: 'Sheet1!A:H'
+        };
+
+        let questions = [];
+
+        // Load questions from Google Sheets
+        async function loadQuestionsFromSheets() {
+            try {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.QUESTIONS_SHEET_ID}/values/${CONFIG.QUESTIONS_RANGE}?key=${CONFIG.API_KEY}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (!data.values || data.values.length === 0) {
+                    throw new Error('No questions found in Google Sheet');
+                }
+                
+                questions = data.values.map((row, index) => {
+                    try {
+                        return {
+                            type: row[0]?.trim() || 'trivia',
+                            question: row[1]?.trim() || '',
+                            image: row[2]?.trim() || null,
+                            options: [
+                                row[3]?.trim() || '',
+                                row[4]?.trim() || '',
+                                row[5]?.trim() || '',
+                                row[6]?.trim() || ''
+                            ].filter(option => option !== ''),
+                            correct: parseInt(row[7]) || 0
+                        };
+                    } catch (error) {
+                        console.error(`Error parsing row ${index + 2}:`, error);
+                        return null;
+                    }
+                }).filter(q => q && q.question && q.options.length >= 2);
+                
+                console.log(`Successfully loaded ${questions.length} questions from Google Sheets`);
+                return true;
+            } catch (error) {
+                console.error('Error loading from Google Sheets:', error);
+                loadFallbackQuestions();
+                return false;
+            }
+        }
+
+        // Fallback questions in case Google Sheets fails
+        function loadFallbackQuestions() {
+            console.log('Loading fallback questions...');
+            questions = [
+                {
+                    type: 'trivia',
+                    question: 'What does RSI stand for in technical analysis?',
+                    image: null,
+                    options: ['Relative Strength Index', 'Rate of Stock Increase', 'Risk Stability Indicator', 'Return on Stock Investment'],
+                    correct: 0
+                },
+                {
+                    type: 'trivia',
+                    question: 'Which of these is a bearish reversal pattern?',
+                    image: null,
+                    options: ['Cup and Handle', 'Head and Shoulders', 'Ascending Triangle', 'Bull Flag'],
+                    correct: 1
+                },
+                {
+                    type: 'trivia',
+                    question: 'What is the primary purpose of stop-loss orders?',
+                    image: null,
+                    options: ['Maximize profits', 'Limit losses', 'Increase leverage', 'Predict market direction'],
+                    correct: 1
+                },
+                {
+                    type: 'trivia',
+                    question: 'Which timeframe is most commonly used for swing trading?',
+                    image: null,
+                    options: ['1 minute', '5 minutes', '1 hour to daily', '1 second'],
+                    correct: 2
+                },
+                {
+                    type: 'trivia',
+                    question: 'What does MACD stand for?',
+                    image: null,
+                    options: ['Moving Average Convergence Divergence', 'Market Analysis and Chart Data', 'Multiple Asset Class Diversification', 'Momentum and Change Direction'],
+                    correct: 0
+                },
+                {
+                    type: 'trivia',
+                    question: 'In options trading, what does "theta" measure?',
+                    image: null,
+                    options: ['Price sensitivity', 'Time decay', 'Volatility impact', 'Interest rate risk'],
+                    correct: 1
+                },
+                {
+                    type: 'trivia',
+                    question: 'What is a bull market?',
+                    image: null,
+                    options: ['Declining prices', 'Rising prices', 'Sideways movement', 'High volatility'],
+                    correct: 1
+                },
+                {
+                    type: 'trivia',
+                    question: 'What does P/E ratio measure?',
+                    image: null,
+                    options: ['Profit/Equity', 'Price/Earnings', 'Performance/Expectation', 'Potential/Execution'],
+                    correct: 1
+                },
+                {
+                    type: 'trivia',
+                    question: 'What is leverage in trading?',
+                    image: null,
+                    options: ['Using borrowed money', 'Profit calculation', 'Risk management', 'Market timing'],
+                    correct: 0
+                },
+                {
+                    type: 'trivia',
+                    question: 'What is market capitalization?',
+                    image: null,
+                    options: ['Total value of company shares', 'Annual revenue', 'Daily trading volume', 'Profit margin'],
+                    correct: 0
+                }
+            ];
+        }
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let userEmail = '';
+        let userPhone = '';
+
+        async function startQuiz() {
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            if (!email || !phone) {
+                alert('Please fill in both email and phone number');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            userEmail = email;
+            userPhone = phone;
+            
+            // Check if user has already attempted
+            if (localStorage.getItem(`quiz_attempted_${email}`)) {
+                alert('You have already attempted this quiz. Each user can only attempt once.');
+                return;
+            }
+            
+            // Show loading state
+            const startBtn = document.querySelector('.btn-primary');
+            const originalText = startBtn.textContent;
+            startBtn.textContent = 'Loading Questions...';
+            startBtn.disabled = true;
+            
+            // Load questions if not already loaded
+            if (questions.length === 0) {
+                const success = await loadQuestionsFromSheets();
+                if (!success) {
+                    alert('Failed to load questions. Using backup questions.');
+                }
+            }
+            
+            // Check if we have enough questions
+            if (questions.length < 5) {
+                alert('Not enough questions available. Please try again later.');
+                startBtn.textContent = originalText;
+                startBtn.disabled = false;
+                return;
+            }
+            
+            // Reset button
+            startBtn.textContent = originalText;
+            startBtn.disabled = false;
+            
+            // Randomly select 5 questions
+            currentQuestions = getRandomQuestions(5);
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            
+            displayQuestion();
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Loading questions from Google Sheets...');
+            const success = await loadQuestionsFromSheets();
+            
+            if (success) {
+                console.log('Questions loaded successfully from Google Sheets');
+            } else {
+                console.log('Using fallback questions');
+            }
+        });
+
+        function getRandomQuestions(count) {
+            const shuffled = [...questions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        function displayQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            const container = document.getElementById('question-container');
+            const counter = document.getElementById('question-counter');
+            const progressFill = document.getElementById('progress-fill');
+            
+            counter.textContent = `Question ${currentQuestionIndex + 1} of 5`;
+            progressFill.style.width = `${((currentQuestionIndex + 1) / 5) * 100}%`;
+            
+            let imageHtml = '';
+            if (question.image && question.image.trim() !== '') {
+                if (question.image.startsWith('http')) {
+                    imageHtml = `<img src="${question.image}" alt="Trading chart/pattern" class="question-image" style="width: 100%; max-width: 300px; height: 200px; object-fit: contain; border-radius: 12px; margin: 0 auto 20px; display: block;" onerror="this.style.display='none'">`;
+                } else {
+                    imageHtml = `<div class="question-image">${question.image}</div>`;
+                }
+            }
+            
+            const optionsHtml = question.options.map((option, index) => 
+                `<div class="option" onclick="selectOption(${index})">${option}</div>`
+            ).join('');
+            
+            container.innerHTML = `
+                <h3>${question.question}</h3>
+                ${imageHtml}
+                <div class="options">
+                    ${optionsHtml}
+                </div>
+            `;
+            
+            document.getElementById('next-btn').disabled = true;
+            document.getElementById('next-btn').textContent = 
+                currentQuestionIndex === 4 ? 'Finish Quiz' : 'Next Question';
+        }
+
+        function selectOption(optionIndex) {
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.option')[optionIndex].classList.add('selected');
+            userAnswers[currentQuestionIndex] = optionIndex;
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < 4) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            let score = 0;
+            for (let i = 0; i < currentQuestions.length; i++) {
+                if (userAnswers[i] === currentQuestions[i].correct) {
+                    score++;
+                }
+            }
+            
+            const isWinner = score >= 3;
+            localStorage.setItem(`quiz_attempted_${userEmail}`, 'true');
+            
+            submitToGoogleSheets({
+                email: userEmail,
+                phone: userPhone,
+                score: score,
+                isWinner: isWinner,
+                timestamp: new Date().toISOString(),
+                answers: userAnswers
+            });
+            
+            showResults(score, isWinner);
+        }
+
+        function showResults(score, isWinner) {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            
+            const resultContent = document.getElementById('result-content');
+            
+            if (isWinner) {
+                resultContent.innerHTML = `
+                    <div class="result-icon win-icon">🏆</div>
+                    <h2 class="result-title">Congratulations!</h2>
+                    <p class="result-subtitle">You scored ${score}/5 and won Gautam Gambhir signed memorabilia!</p>
+                    <p style="margin-bottom: 20px;">We'll contact you soon with details about claiming your prize.</p>
+                    
+                    <div class="share-buttons">
+                        <a href="${getTwitterShareUrl()}" class="share-btn twitter" target="_blank">Share on Twitter</a>
+                        <a href="${getWhatsAppShareUrl()}" class="share-btn whatsapp" target="_blank">Share on WhatsApp</a>
+                        <a href="${getTelegramShareUrl()}" class="share-btn telegram" target="_blank">Share on Telegram</a>
+                    </div>
+                    
+                    <div class="cta-section">
+                        <h4>Start Your Trading Journey</h4>
+                        <p>Join CoinDCX and trade with India's most trusted crypto platform</p>
+                        <button class="btn btn-secondary">Download CoinDCX App</button>
+                    </div>
+                `;
+            } else {
+                resultContent.innerHTML = `
+                    <div class="result-icon lose-icon">😔</div>
+                    <h2 class="result-title">Better luck next time!</h2>
+                    <p class="result-subtitle">You scored ${score}/5. You need at least 3 correct answers to win.</p>
+                    <p style="margin-bottom: 20px;">Keep learning and improve your trading knowledge!</p>
+                    
+                    <div class="cta-section">
+                        <h4>Level Up Your Trading Skills</h4>
+                        <p>Learn from experts and master the markets with CoinDCX</p>
+                        <button class="btn btn-secondary">Explore CoinDCX Academy</button>
+                    </div>
+                `;
+            }
+        }
+
+        function getTwitterShareUrl() {
+            const text = "I just won Gautam Gambhir signed memorabilia in the CoinDCX Trading Quiz! Test your trading knowledge too.";
+            return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+        }
+
+        function getWhatsAppShareUrl() {
+            const text = "I just won Gautam Gambhir signed memorabilia in the CoinDCX Trading Quiz! Test your trading knowledge too: " + window.location.href;
+            return `https://wa.me/?text=${encodeURIComponent(text)}`;
+        }
+
+        function getTelegramShareUrl() {
+            const text = "I just won Gautam Gambhir signed memorabilia in the CoinDCX Trading Quiz! Test your trading knowledge too.";
+            return `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`;
+        }
+
+        async function submitToGoogleSheets(data) {
+            const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+            
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                console.log('Successfully submitted to Google Sheets');
+            } catch (error) {
+                console.error('Error submitting to Google Sheets:', error);
+                console.log('Quiz submission data:', data);
+            }
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+    </script>
+</body>
+</html>
