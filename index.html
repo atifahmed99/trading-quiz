@@ -466,7 +466,8 @@
             RESULTS_SHEET_ID: '1F1RwIx7m84FY6JMNwDlb5gTK65DLrkpGT33aI_9auwo',
             API_KEY: 'AIzaSyAPdtL0HrgW3YTV9WawK0zre2qQM5WZTW8',
             QUESTIONS_RANGE: "'Question Bank '!A2:H",  // Note the space after "Bank"
-            RESULTS_RANGE: 'Sheet1!A:H'
+            RESULTS_RANGE: 'Sheet1!A:H',
+            APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby2xEc1VI477ILtNXXGNsKG2JaADPRFe7gZ6JlC5tpxP5Ms03I1D_lUhOiSH6wJEkA/exec'
         };
 
         let questions = [];
@@ -777,7 +778,8 @@
                 score: score,
                 isWinner: isWinner,
                 timestamp: new Date().toISOString(),
-                answers: userAnswers
+                answers: userAnswers,
+                questionsAsked: currentQuestions.map(q => q.question).join(' | ')
             });
             
             showResults(score, isWinner);
@@ -840,20 +842,33 @@
         }
 
         async function submitToGoogleSheets(data) {
+            // Replace with your actual Google Apps Script Web App URL
             const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
             
             try {
-                await fetch(APPS_SCRIPT_URL, {
+                console.log('Submitting data to Google Sheets:', data);
+                
+                const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(data)
                 });
-                console.log('Successfully submitted to Google Sheets');
+                
+                const result = await response.text();
+                console.log('Google Sheets response:', result);
+                
+                if (result === 'Success') {
+                    console.log('✅ Successfully submitted to Google Sheets');
+                } else {
+                    console.error('❌ Error from Google Sheets:', result);
+                }
+                
             } catch (error) {
-                console.error('Error submitting to Google Sheets:', error);
-                console.log('Quiz submission data:', data);
+                console.error('❌ Error submitting to Google Sheets:', error);
+                // Still log the data locally for backup
+                console.log('📝 Quiz submission data (for manual entry):', data);
             }
         }
 
