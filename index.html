@@ -465,7 +465,7 @@
             QUESTIONS_SHEET_ID: '1Eblrd9fkzTlEDBnJ8Ju87oynIkZfzpGMH0z6C9PMhcM',
             RESULTS_SHEET_ID: '1F1RwIx7m84FY6JMNwDlb5gTK65DLrkpGT33aI_9auwo',
             API_KEY: 'AIzaSyAPdtL0HrgW3YTV9WawK0zre2qQM5WZTW8',
-            QUESTIONS_RANGE: 'Question Bank!A2:H',
+            QUESTIONS_RANGE: "'Question Bank '!A2:H",  // Note the space after "Bank"
             RESULTS_RANGE: 'Sheet1!A:H'
         };
 
@@ -474,12 +474,50 @@
         // Load questions from Google Sheets
         async function loadQuestionsFromSheets() {
             try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.QUESTIONS_SHEET_ID}/values/${CONFIG.QUESTIONS_RANGE}?key=${CONFIG.API_KEY}`;
-                const response = await fetch(url);
-                const data = await response.json();
+                // First, let's get the sheet information to see available tabs
+                const sheetInfoUrl = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.QUESTIONS_SHEET_ID}?key=${CONFIG.API_KEY}`;
+                const sheetInfoResponse = await fetch(sheetInfoUrl);
+                const sheetInfo = await sheetInfoResponse.json();
                 
-                if (!data.values || data.values.length === 0) {
-                    throw new Error('No questions found in Google Sheet');
+                if (sheetInfo.sheets) {
+                    console.log('Available sheet tabs:');
+                    sheetInfo.sheets.forEach(sheet => {
+                        console.log(`- "${sheet.properties.title}" (ID: ${sheet.properties.sheetId})`);
+                    });
+                }
+                
+                // Try different possible sheet names
+                const possibleRanges = [
+                    "'Question Bank '!A2:H",    // Your actual sheet name with trailing space
+                    "'Question Bank'!A2:H",     // Without trailing space
+                    "Question Bank!A2:H",       // Without quotes
+                    "A2:H",                     // No sheet name (uses first sheet)
+                    `'${sheetInfo.sheets[0].properties.title}'!A2:H`  // Use first sheet name
+                ];
+                
+                let data = null;
+                let usedRange = '';
+                
+                for (const range of possibleRanges) {
+                    try {
+                        console.log(`Trying range: ${range}`);
+                        const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.QUESTIONS_SHEET_ID}/values/${encodeURIComponent(range)}?key=${CONFIG.API_KEY}`;
+                        const response = await fetch(url);
+                        const testData = await response.json();
+                        
+                        if (testData.values && testData.values.length > 0) {
+                            data = testData;
+                            usedRange = range;
+                            console.log(`✅ Success with range: ${range}`);
+                            break;
+                        }
+                    } catch (e) {
+                        console.log(`❌ Failed with range: ${range}`, e);
+                    }
+                }
+                
+                if (!data || !data.values || data.values.length === 0) {
+                    throw new Error('No questions found in any sheet tab');
                 }
                 
                 questions = data.values.map((row, index) => {
@@ -502,7 +540,7 @@
                     }
                 }).filter(q => q && q.question && q.options.length >= 2);
                 
-                console.log(`Successfully loaded ${questions.length} questions from Google Sheets`);
+                console.log(`Successfully loaded ${questions.length} questions from Google Sheets using range: ${usedRange}`);
                 return true;
             } catch (error) {
                 console.error('Error loading from Google Sheets:', error);
