@@ -391,7 +391,7 @@
                 <div id="logo-fallback" class="logo-fallback" style="display: none;">CoinDCX</div>
                 
                 <h1 class="title">Trading Quiz Challenge</h1>
-                <p class="subtitle">Test your trading knowledge and win Gautam Gambhir signed memorabilia!</p>
+                <p class="subtitle">Test your trading knowledge and win Gautam Gambhir merchandise!</p>
             </div>
             
             <div class="card">
@@ -795,7 +795,7 @@
                 resultContent.innerHTML = `
                     <div class="result-icon win-icon">🏆</div>
                     <h2 class="result-title">Congratulations!</h2>
-                    <p class="result-subtitle">You scored ${score}/5 and won Gautam Gambhir signed memorabilia!</p>
+                    <p class="result-subtitle">You scored ${score}/5 and won Gautam Gambhir merchandise!</p>
                     <p style="margin-bottom: 20px;">We'll contact you soon with details about claiming your prize.</p>
                     
                     <div class="share-buttons">
@@ -805,10 +805,11 @@
                     </div>
                     
                     <div class="cta-section">
-                        <h4>Start Your Trading Journey</h4>
-                        <p>Join CoinDCX and trade with India's most trusted crypto platform</p>
-                        <button class="btn btn-secondary">Download CoinDCX App</button>
+                        <h4>Start trading Futures. Get ₹500 from us!</h4>
+                        <p>Create your FREE account and place your first futures trade to claim!</p>
+                        <a href="https://join.coindcx.com/invite/9wGtb" target="_blank" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">Download CoinDCX App</a>
                     </div>
+
                 `;
             } else {
                 resultContent.innerHTML = `
@@ -827,17 +828,17 @@
         }
 
         function getTwitterShareUrl() {
-            const text = "I just won Gautam Gambhir signed memorabilia in the CoinDCX Trading Quiz! Test your trading knowledge too.";
+            const text = "I just won Gautam Gambhir merchandise in the CoinDCX Trading Quiz! Test your trading knowledge too.";
             return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
         }
 
         function getWhatsAppShareUrl() {
-            const text = "I just won Gautam Gambhir signed memorabilia in the CoinDCX Trading Quiz! Test your trading knowledge too: " + window.location.href;
+            const text = "I just won Gautam Gambhir merchandise in the CoinDCX Trading Quiz! Test your trading knowledge too: " + window.location.href;
             return `https://wa.me/?text=${encodeURIComponent(text)}`;
         }
 
         function getTelegramShareUrl() {
-            const text = "I just won Gautam Gambhir signed memorabilia in the CoinDCX Trading Quiz! Test your trading knowledge too.";
+            const text = "I just won Gautam Gambhir merchandise in the CoinDCX Trading Quiz! Test your trading knowledge too.";
             return `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`;
         }
 
